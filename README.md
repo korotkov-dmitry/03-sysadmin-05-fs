@@ -49,13 +49,45 @@
         vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', lvm_experiments_disk0_path]
         vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', lvm_experiments_disk1_path]
       end
-    end
-    ```
+    end```
 
-    Данная конфигурация создаст новую виртуальную машину с двумя дополнительными неразмеченными дисками по 2.5 Гб.
+Данная конфигурация создаст новую виртуальную машину с двумя дополнительными неразмеченными дисками по 2.5 Гб.
 
+       `vagrant@vagrant:~$ lsblk
+        NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+        sda                    8:0    0   64G  0 disk
+        ├─sda1                 8:1    0  512M  0 part /boot/efi
+        ├─sda2                 8:2    0    1K  0 part
+        └─sda5                 8:5    0 63.5G  0 part
+          ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
+          └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
+        sdb                    8:16   0  2.5G  0 disk
+        sdc                    8:32   0  2.5G  0 disk`
 ## 4. Используя `fdisk`, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
-
+        `vagrant@vagrant:~$ lsblk
+        NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+        sda                    8:0    0   64G  0 disk
+        ├─sda1                 8:1    0  512M  0 part /boot/efi
+        ├─sda2                 8:2    0    1K  0 part
+        └─sda5                 8:5    0 63.5G  0 part
+          ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
+          └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
+        sdb                    8:16   0  2.5G  0 disk
+        ├─sdb1                 8:17   0    2G  0 part
+        └─sdb2                 8:18   0  500M  0 part
+        sdc                    8:32   0  2.5G  0 disk
+        vagrant@vagrant:~$ sudo fdisk -l /dev/sdb
+        Disk /dev/sdb: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+        Disk model: VBOX HARDDISK
+        Units: sectors of 1 * 512 = 512 bytes
+        Sector size (logical/physical): 512 bytes / 512 bytes
+        I/O size (minimum/optimal): 512 bytes / 512 bytes
+        Disklabel type: dos
+        Disk identifier: 0x6e80328c
+        
+        Device     Boot   Start     End Sectors  Size Id Type
+        /dev/sdb1          2048 4218879 4216832    2G 83 Linux
+        /dev/sdb2       4218880 5242879 1024000  500M 83 Linux`
 ## 5. Используя `sfdisk`, перенесите данную таблицу разделов на второй диск.
 
 ## 6. Соберите `mdadm` RAID1 на паре разделов 2 Гб.
