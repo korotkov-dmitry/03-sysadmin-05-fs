@@ -89,7 +89,62 @@
         /dev/sdb1          2048 4218879 4216832    2G 83 Linux
         /dev/sdb2       4218880 5242879 1024000  500M 83 Linux`
 ## 5. Используя `sfdisk`, перенесите данную таблицу разделов на второй диск.
+        `root@vagrant:~# sfdisk -d /dev/sdb|sfdisk --force /dev/sdc
+        Checking that no-one is using this disk right now ... OK
 
+        Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+        Disk model: VBOX HARDDISK
+        Units: sectors of 1 * 512 = 512 bytes
+        Sector size (logical/physical): 512 bytes / 512 bytes
+        I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+        >>> Script header accepted.
+        >>> Script header accepted.
+        >>> Script header accepted.
+        >>> Script header accepted.
+        >>> Created a new DOS disklabel with disk identifier 0x6e80328c.
+        /dev/sdc1: Created a new partition 1 of type 'Linux' and of size 2 GiB.
+        /dev/sdc2: Created a new partition 2 of type 'Linux' and of size 500 MiB.
+        /dev/sdc3: Done.
+
+        New situation:
+        Disklabel type: dos
+        Disk identifier: 0x6e80328c
+
+        Device     Boot   Start     End Sectors  Size Id Type
+        /dev/sdc1          2048 4218879 4216832    2G 83 Linux
+        /dev/sdc2       4218880 5242879 1024000  500M 83 Linux
+
+        The partition table has been altered.
+        Calling ioctl() to re-read partition table.
+        Syncing disks.`
+
+Результат:
+
+        `vagrant@vagrant:~$ sudo fdisk -l /dev/sdb
+        Disk /dev/sdb: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+        Disk model: VBOX HARDDISK
+        Units: sectors of 1 * 512 = 512 bytes
+        Sector size (logical/physical): 512 bytes / 512 bytes
+        I/O size (minimum/optimal): 512 bytes / 512 bytes
+        Disklabel type: dos
+        Disk identifier: 0x6e80328c
+
+        Device     Boot   Start     End Sectors  Size Id Type
+        /dev/sdb1          2048 4218879 4216832    2G 83 Linux
+        /dev/sdb2       4218880 5242879 1024000  500M 83 Linux
+        vagrant@vagrant:~$ sudo fdisk -l /dev/sdc
+        Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+        Disk model: VBOX HARDDISK
+        Units: sectors of 1 * 512 = 512 bytes
+        Sector size (logical/physical): 512 bytes / 512 bytes
+        I/O size (minimum/optimal): 512 bytes / 512 bytes
+        Disklabel type: dos
+        Disk identifier: 0x6e80328c
+
+        Device     Boot   Start     End Sectors  Size Id Type
+        /dev/sdc1          2048 4218879 4216832    2G 83 Linux
+        /dev/sdc2       4218880 5242879 1024000  500M 83 Linux`
 ## 6. Соберите `mdadm` RAID1 на паре разделов 2 Гб.
 
 ## 7. Соберите `mdadm` RAID0 на второй паре маленьких разделов.
