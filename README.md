@@ -1,9 +1,41 @@
 # Домашнее задание к занятию "3.5. Файловые системы"
 
 ## 1. Узнайте о [sparse](https://ru.wikipedia.org/wiki/%D0%A0%D0%B0%D0%B7%D1%80%D0%B5%D0%B6%D1%91%D0%BD%D0%BD%D1%8B%D0%B9_%D1%84%D0%B0%D0%B9%D0%BB) (разряженных) файлах.
-
+Выполнено.
 ## 2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
+`hardlink` - это ссылка на один объект, имеющий тот же inode, т.е права будут одинаковые.
 
+        `vagrant@vagrant:~$ ls -l
+        total 0
+        -rw-rw-r-- 1 vagrant vagrant 0 Nov 28 12:50 test_fs
+        vagrant@vagrant:~$ ln test_fs test_fs_link
+        vagrant@vagrant:~$ ls -l
+        total 0
+        -rw-rw-r-- 2 vagrant vagrant 0 Nov 28 12:50 test_fs
+        -rw-rw-r-- 2 vagrant vagrant 0 Nov 28 12:50 test_fs_link
+        vagrant@vagrant:~$ chmod 0755 test_fs
+        vagrant@vagrant:~$ ls -l
+        total 0
+        -rwxr-xr-x 2 vagrant vagrant 0 Nov 28 12:50 test_fs
+        -rwxr-xr-x 2 vagrant vagrant 0 Nov 28 12:50 test_fs_link
+        vagrant@vagrant:~$ stat test_fs
+          File: test_fs
+          Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+        Device: fd00h/64768d    Inode: 131087      Links: 2
+        Access: (0755/-rwxr-xr-x)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+        Access: 2021-11-28 12:50:16.259108017 +0000
+        Modify: 2021-11-28 12:50:16.259108017 +0000
+        Change: 2021-11-28 12:53:51.006439169 +0000
+         Birth: -
+        vagrant@vagrant:~$ stat test_fs_link
+          File: test_fs_link
+          Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+        Device: fd00h/64768d    Inode: 131087      Links: 2
+        Access: (0755/-rwxr-xr-x)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+        Access: 2021-11-28 12:50:16.259108017 +0000
+        Modify: 2021-11-28 12:50:16.259108017 +0000
+        Change: 2021-11-28 12:53:51.006439169 +0000
+        Birth: -`        
 ## 3. Сделайте `vagrant destroy` на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile следующим:
 
     ```bash
