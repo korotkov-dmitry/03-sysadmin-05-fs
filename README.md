@@ -53,6 +53,8 @@
 
 Данная конфигурация создаст новую виртуальную машину с двумя дополнительными неразмеченными дисками по 2.5 Гб.
 
+Результат:
+
        `vagrant@vagrant:~$ lsblk
         NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
         sda                    8:0    0   64G  0 disk
