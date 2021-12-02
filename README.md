@@ -331,7 +331,9 @@
     root@vagrant:~# echo $?
     0
     ```
-    
+
+Результат:
+
         `vagrant@vagrant:~$ gzip -t /tmp/new/test.gz
         vagrant@vagrant:~$  echo $?
         0`
@@ -406,4 +408,13 @@
     0
     ```
 
+Результат:
+
+        `vagrant@vagrant:~$ gzip -t /tmp/new/test.gz && echo $?
+        0
+        vagrant@vagrant:~$`
 ## 20. Погасите тестовый хост, `vagrant destroy`.
+        `PS C:\Users\fulla\netology_devops\Ubuntu2004> vagrant destroy
+            default: Are you sure you want to destroy the 'default' VM? [y/N] y
+        ==> default: Forcing shutdown of VM...
+        ==> default: Destroying VM and associated drives...`
