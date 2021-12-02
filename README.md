@@ -149,8 +149,61 @@
         /dev/sdc2       4218880 5242879 1024000  500M 83 Linux`
 ## 6. Соберите `mdadm` RAID1 на паре разделов 2 Гб.
 
+        `vagrant@vagrant:~$ sudo mdadm --create --verbose /dev/md1 -l 1 -n 2 /dev/sd{b1,c1}
+        mdadm: Note: this array has metadata at the start and
+            may not be suitable as a boot device.  If you plan to
+            store '/boot' on this device please ensure that
+            your boot-loader understands md/v1.x metadata, or use
+            --metadata=0.90
+        mdadm: size set to 2105344K
+        Continue creating array? y
+        mdadm: Defaulting to version 1.2 metadata
+        mdadm: array /dev/md1 started.
+        vagrant@vagrant:~$ lsblk
+        NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+        sda                    8:0    0   64G  0 disk
+        ├─sda1                 8:1    0  512M  0 part  /boot/efi
+        ├─sda2                 8:2    0    1K  0 part
+        └─sda5                 8:5    0 63.5G  0 part
+          ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+          └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+        sdb                    8:16   0  2.5G  0 disk
+        ├─sdb1                 8:17   0    2G  0 part
+        │ └─md1                9:1    0    2G  0 raid1
+        └─sdb2                 8:18   0  500M  0 part
+        sdc                    8:32   0  2.5G  0 disk
+        ├─sdc1                 8:33   0    2G  0 part
+        │ └─md1                9:1    0    2G  0 raid1
+        └─sdc2                 8:34   0  500M  0 part`
 ## 7. Соберите `mdadm` RAID0 на второй паре маленьких разделов.
-
+        
+        `vagrant@vagrant:~$ sudo mdadm --create --verbose /dev/md0 -l 0 -n 2 /dev/sd{b2,c2}
+        mdadm: chunk size defaults to 512K
+        mdadm: /dev/sdb2 appears to be part of a raid array:
+               level=raid1 devices=2 ctime=Thu Dec  2 04:47:08 2021
+        mdadm: /dev/sdc2 appears to be part of a raid array:
+               level=raid1 devices=2 ctime=Thu Dec  2 04:47:08 2021
+        Continue creating array? y
+        mdadm: Defaulting to version 1.2 metadata
+        mdadm: array /dev/md0 started.
+        vagrant@vagrant:~$ lsblk
+        NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+        sda                    8:0    0   64G  0 disk
+        ├─sda1                 8:1    0  512M  0 part  /boot/efi
+        ├─sda2                 8:2    0    1K  0 part
+        └─sda5                 8:5    0 63.5G  0 part
+          ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+          └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+        sdb                    8:16   0  2.5G  0 disk
+        ├─sdb1                 8:17   0    2G  0 part
+        │ └─md1                9:1    0    2G  0 raid1
+        └─sdb2                 8:18   0  500M  0 part
+          └─md0                9:0    0  996M  0 raid0
+        sdc                    8:32   0  2.5G  0 disk
+        ├─sdc1                 8:33   0    2G  0 part
+        │ └─md1                9:1    0    2G  0 raid1
+        └─sdc2                 8:34   0  500M  0 part
+          └─md0                9:0    0  996M  0 raid0`
 ## 8. Создайте 2 независимых PV на получившихся md-устройствах.
 
 ## 9. Создайте общую volume-group на этих двух PV.
